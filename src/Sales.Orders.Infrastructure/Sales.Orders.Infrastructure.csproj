@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <PackageId>Sales.Orders.Infrastructure</PackageId>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.22" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.22" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Sales.Orders.Domain\Sales.Orders.Domain.csproj" />
+    </ItemGroup>
+
+</Project>
