@@ -1,0 +1,46 @@
+services:
+  order-api:
+    image: sales-orders-api:latest
+    container_name: sales-orders-api
+    build: 
+      context: ../src
+      dockerfile: ./Sales.Orders.Api/Dockerfile  
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5000
+      - ConnectionStrings__DefaultConnection=Server=mssql-db;Database=SalesOrdersDb;User Id=sa;Password=YourPassword123!
+    depends_on:
+       - mssql-db
+    networks:
+      - order-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+
+  mssql-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sales-orders-mssql
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "YourPassword123!"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+    networks:
+      - order-network
+    restart: unless-stopped
+
+networks:
+  order-network:
+    driver: bridge
+
+volumes:
+   mssql-data:
