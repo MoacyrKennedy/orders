@@ -10,7 +10,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5000
-      - ConnectionStrings__DefaultConnection=Server=mssql-db;Database=SalesOrdersDb;User Id=sa;Password=YourPassword123!
+      - ConnectionStrings__DefaultConnection=Server=mssql-db;Database=SalesOrdersDb;User Id=sa;Password=YourPassword123!;Encrypt=False;TrustServerCertificate=True
     depends_on:
        - mssql-db
     networks:

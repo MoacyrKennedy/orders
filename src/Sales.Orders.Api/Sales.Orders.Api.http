@@ -1,6 +1,84 @@
 @Sales.Orders.Api_HostAddress = http://localhost:5110
 
-GET {{Sales.Orders.Api_HostAddress}}/weatherforecast/
+POST {{Sales.Orders.Api_HostAddress}}/api/v1/orders
+Content-Type: application/json
+
+{
+	"companyId": "9ea2d8f4-4f80-4e87-b63f-f4dc7a5ef8f9",
+	"companyName": "Acme Corp",
+	"customerId": "f16f02ff-77f8-4524-9820-d4a57a8ff4d4",
+	"customerName": "Jane Doe",
+	"items": [
+		{
+			"productId": "f41abf18-421c-4f99-9e14-7f9f1918c2d6",
+			"productName": "Notebook",
+			"quantity": 2,
+			"unitPrice": 10.50,
+			"discount": 1.00
+		}
+	]
+}
+
+###
+
+@orderId = 00000000-0000-0000-0000-000000000000
+@itemId = 00000000-0000-0000-0000-000000000000
+
+GET {{Sales.Orders.Api_HostAddress}}/api/v1/orders/{{orderId}}
+Accept: application/json
+
+###
+
+GET {{Sales.Orders.Api_HostAddress}}/api/v1/orders?page=1&pageSize=20&status=Pending
+Accept: application/json
+
+###
+
+POST {{Sales.Orders.Api_HostAddress}}/api/v1/orders/{{orderId}}/items
+Content-Type: application/json
+
+{
+	"productId": "e23dc248-1f6c-4d39-82e7-9a7ea44023f0",
+	"productName": "Mouse",
+	"quantity": 3,
+	"unitPrice": 5.90,
+	"discount": 0
+}
+
+###
+
+PUT {{Sales.Orders.Api_HostAddress}}/api/v1/orders/{{orderId}}/header
+Content-Type: application/json
+
+{
+	"companyId": "9ea2d8f4-4f80-4e87-b63f-f4dc7a5ef8f9",
+	"companyName": "Acme Corp Updated",
+	"customerId": "f16f02ff-77f8-4524-9820-d4a57a8ff4d4",
+	"customerName": "Jane Doe Updated"
+}
+
+###
+
+PUT {{Sales.Orders.Api_HostAddress}}/api/v1/orders/{{orderId}}/items/{{itemId}}
+Content-Type: application/json
+
+{
+	"quantity": 4,
+	"unitPrice": 6.10,
+	"discount": 1.00
+}
+
+###
+
+DELETE {{Sales.Orders.Api_HostAddress}}/api/v1/orders/{{orderId}}/items/{{itemId}}
+
+###
+
+PUT {{Sales.Orders.Api_HostAddress}}/api/v1/orders/{{orderId}}/cancel
+
+###
+
+GET {{Sales.Orders.Api_HostAddress}}/api/v1/orders/pending?page=1&pageSize=20
 Accept: application/json
 
 ###

@@ -21,6 +21,20 @@ public class OrderTest
         Assert.Equal(OrderStatus.Pending, _order.OrderStatus);
     }
 
+    [Fact(DisplayName = "must calculate the order total when created with items.")]
+    public void T2_1()
+    {
+        var order = new Order(
+            Customer.Create(Guid.NewGuid(), "Customer Test").Value!,
+            Company.Create(Guid.NewGuid(), "Company Test").Value!,
+            [
+                new OrderItem(new Product(Guid.NewGuid(), "Product A"), 2, 10m, 1m),
+                new OrderItem(new Product(Guid.NewGuid(), "Product B"), 1, 5m, 0m)
+            ]);
+
+        Assert.Equal(24m, order.Total);
+    }
+
     [Fact(DisplayName = "must calculate the order total when adding an item.")]
     public void T3()
     {
@@ -35,6 +49,7 @@ public class OrderTest
         var item = _order.Items.Last();
         _order.RemoveItem(item.Id);
         Assert.True(_order.Items.Last().IsDeleted);
+        Assert.Equal(0m, _order.Total);
     }
 
     [Fact(DisplayName = "should apply a discount to the item.")]
@@ -79,5 +94,12 @@ public class OrderTest
     {
         _order.UpdateHeader(null!, null!);
         Assert.False(_order.IsValid);
+    }
+
+    [Fact(DisplayName = "must cancel order when status allows cancellation")]
+    public void T10()
+    {
+        _order.Cancel();
+        Assert.Equal(OrderStatus.Cancelled, _order.OrderStatus);
     }
 }

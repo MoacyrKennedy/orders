@@ -25,6 +25,7 @@ public sealed class Order : BaseEntity
         Company = company;
         Customer = customer;
         _items = orderItems;
+        RecalculateTotal();
     }
 
     public void AddItem(OrderItem item)
@@ -38,6 +39,7 @@ public sealed class Order : BaseEntity
     {
         if (IsNotePedding()) return;
         var index = _items.FindIndex(i => i.Id == itemId);
+        if (index < 0) return;
         _items[index].SoftDelete();
         RecalculateTotal();
     }
@@ -45,19 +47,31 @@ public sealed class Order : BaseEntity
     public void ApplyDiscountItem(Guid itemId, decimal discount)
     {
         var index = _items.FindIndex(i => i.Id == itemId);
+        if (index < 0) return;
         _items[index].ApplyDiscount(discount);
+        RecalculateTotal();
     }
 
     public void UpdateUnitPriceItem(Guid itemId, decimal unitPrice)
     {
         var index = _items.FindIndex(i => i.Id == itemId);
+        if (index < 0) return;
         _items[index].UpdateUnitPrice(unitPrice);
+        RecalculateTotal();
     }
 
     public void UpdateQuantityItem(Guid itemId, double quantity)
     {
         var index = _items.FindIndex(i => i.Id == itemId);
+        if (index < 0) return;
         _items[index].UpdateQuantity(quantity);
+        RecalculateTotal();
+    }
+
+    public void Cancel()
+    {
+        if (OrderStatus is OrderStatus.Completed or OrderStatus.Cancelled) return;
+        OrderStatus = OrderStatus.Cancelled;
     }
 
     private bool IsNotePedding()
@@ -67,7 +81,7 @@ public sealed class Order : BaseEntity
 
     private void RecalculateTotal()
     {
-        Total = _items.Sum(i => i.Total);
+        Total = _items.Where(i => !i.IsDeleted).Sum(i => i.Total);
     }
 
     public override void SoftDelete()
